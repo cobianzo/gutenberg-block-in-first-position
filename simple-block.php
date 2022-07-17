@@ -32,18 +32,22 @@ function blocks_course_plugin_register_template() {
 		array(
 			'create-block/simple-block',
 			array(
-				'content' => 'THI SOI THE',
+				'content' => 'THIS is not neccessary. The content, I mean.',
 				'lock'    => array(
 					'move'   => true,
 					'remove' => true,
 				),
 			),
 		),
+		array(
+			'core/paragraph',
+			array(
+				'content' => 'This is the intruder block that you can try to move to the first position. This plugin will not allow it.',
+			),
+		),
 	);
 
 	$post_type_object           = get_post_type_object( 'post' );
 	$post_type_object->template = $block_template;
-	// $post_type_object->template_lock = 'all';
-
 }
 

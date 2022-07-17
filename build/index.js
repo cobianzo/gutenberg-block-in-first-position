@@ -19,94 +19,84 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var _helpers_CheckFirstPosition__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./helpers/CheckFirstPosition */ "./src/helpers/CheckFirstPosition.js");
+/* harmony import */ var _helpers_useFirstBlockHook__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./helpers/useFirstBlockHook */ "./src/helpers/useFirstBlockHook.js");
 
 
 
+ // Use this if you prefer to use the component instead of the hook.
+// import CheckFirstPosition from './helpers/CheckFirstPosition';
+// Use this if you prefer to use the custom hook instead of the component.
 
 
 function Edit(props) {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_helpers_CheckFirstPosition__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    clientId: props.clientId
-  }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This block MUST BE ALWAYS in first position', 'simple-block'));
+  // This makes the job - ensures that the block is not moved from the first position.
+  (0,_helpers_useFirstBlockHook__WEBPACK_IMPORTED_MODULE_4__["default"])(props.clientId);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This block MUST BE ALWAYS in first position', 'simple-block'));
 }
 
 /***/ }),
 
-/***/ "./src/helpers/CheckFirstPosition.js":
-/*!*******************************************!*\
-  !*** ./src/helpers/CheckFirstPosition.js ***!
-  \*******************************************/
+/***/ "./src/helpers/useFirstBlockHook.js":
+/*!******************************************!*\
+  !*** ./src/helpers/useFirstBlockHook.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ CheckFirstPosition)
+/* harmony export */   "default": () => (/* binding */ useFirstBlock)
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/notices */ "@wordpress/notices");
-/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_notices__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__);
-
-
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
 /**
- * Component that shows an error message to when the user tries to move the parent block
- * to a position that is not allowed. At the moment the only allowed position is the first one.
- * Usage in the parent, in the JSX render:  <CheckFirstPosition clientId={ props.clientId } />
- * @param { string } cliendId - The identifier of the block
- * @returns null (optionally you can include som JSX)
+ * Avoids that the block given by id is moved from the first position.
+ * If it is moved, it is moved back to the first position with a dismisable error message
+ *
+ * @param {string} clientId - The identifier of the block
+ * @returns boolean, but it is not important. What it matters is what it does
  */
 
-function CheckFirstPosition(_ref) {
-  let {
-    clientId
-  } = _ref;
-  const {
-    createErrorNotice
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_3__.store);
+function useFirstBlock(clientId) {
   const {
     resetBlocks
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store);
-  const [noticeStatus, setNoticeStatus] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false); // true means the notice was shown.
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)('core/block-editor');
+  const {
+    createErrorNotice
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)('core/notices');
+  const bIndex = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => select('core/block-editor').getBlockIndex(clientId));
+  console.log('%c Rendered', 'font-size:1.5rem;', bIndex); // const [ blockPos, setBlockPos ] = useState( false );
 
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    const bIndex = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store).getBlockIndex(clientId);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    console.log('bIndex has changed', bIndex);
+    const [indexA, indexB] = [bIndex, 0];
+    const allBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.select)('core/block-editor').getBlocks();
+    const numberOfBlocks = allBlocks.length; // Validation: check we are trying to swap two existing position of blocks.
 
-    if (bIndex > 0) {
-      // we move the block back to the first position (position 0).
-      const [indexA, indexB] = [bIndex, 0];
-      const allBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.select)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.store).getBlocks();
-      const numberOfBlocks = allBlocks.length; // Validation: check we are trying to swap two existing position of blocks.
+    if (bIndex === 0) return false;
 
-      if (indexA >= numberOfBlocks || indexB >= numberOfBlocks) {
-        return false;
-      } // swapt with array deconstruction.
+    if (indexA >= numberOfBlocks || indexB >= numberOfBlocks) {
+      return false;
+    } // swapt with array deconstruction.
 
 
-      [allBlocks[indexA], allBlocks[indexB]] = [allBlocks[indexB], allBlocks[indexA]]; // console.log( '%c swaping blocks', 'font-size:2rem;', allBlocks );
-
-      resetBlocks(allBlocks);
-      if (!noticeStatus) createErrorNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Ooops, you have tried to move the block JANDER to the second position. Sorry, this is not allowed.', 'aaa'), {
-        id: 'error-pos-0',
-        type: 'snackbar',
-        explicitDismiss: true
-      });
-      setNoticeStatus(true);
-    } else {// removeNotice( 'error-pos-0' );
-    }
-
-    return null; // no need to create fn to remove notice.
-  });
-  return null; //JSXL <div>If you want to show a message in the block, do it here.</div>;
+    [allBlocks[indexA], allBlocks[indexB]] = [allBlocks[indexB], allBlocks[indexA]];
+    console.log('%c swaping blocks', 'font-size:2rem;', allBlocks);
+    resetBlocks(allBlocks);
+    createErrorNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Ooops, you have tried to move the block SIMPLE BLOCK to the second position. Sorry, this is not allowed.', 'simple-block'), {
+      id: 'error-pos-0',
+      type: 'snackbar',
+      explicitDismiss: true
+    });
+    return true;
+  }, [bIndex]);
+  return true;
 }
 
 /***/ }),
@@ -232,16 +222,6 @@ module.exports = window["wp"]["element"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "@wordpress/notices":
-/*!*********************************!*\
-  !*** external ["wp","notices"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["notices"];
 
 /***/ }),
 

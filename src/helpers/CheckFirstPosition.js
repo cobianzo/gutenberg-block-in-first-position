@@ -42,8 +42,8 @@ export default function CheckFirstPosition( { clientId } ) {
 			if ( ! noticeStatus )
 				createErrorNotice(
 					__(
-						'Ooops, you have tried to move the block JANDER to the second position. Sorry, this is not allowed.',
-						'aaa'
+						'Ooops, you have tried to move the block SIMPLE BLOCK to the second position. Sorry, this is not allowed.',
+						'simple-block'
 					),
 					{
 						id: 'error-pos-0',
