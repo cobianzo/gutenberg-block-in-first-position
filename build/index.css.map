@@ -1,0 +1,1 @@
+{"version":3,"file":"index.css","mappings":";;;AAAA;EACC;EACA;EACA;AACD,C","sources":["webpack://simple-block/./src/editor.scss"],"sourcesContent":[".wp-block-create-block-simple-block {\n\tborder: 1px dotted #f00;\n\tbackground-color: aqua;\n\tpadding: 10px;\n}\n"],"names":[],"sourceRoot":""}
